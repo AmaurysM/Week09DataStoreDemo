@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,7 +21,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -36,12 +34,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import edu.farmingdale.datastoredemo.R
-
 import edu.farmingdale.datastoredemo.data.local.LocalEmojiData
 
 /*
@@ -65,10 +61,10 @@ fun EmojiReleaseApp(
 private fun EmojiScreen(
     uiState: EmojiReleaseUiState,
     selectLayout: (Boolean) -> Unit,
-    backgroundToggle: (Boolean) -> Unit
+    backgroundToggle: (Boolean) -> Unit // toggles between light and dark theme
 ) {
     val isLinearLayout = uiState.isLinearLayout
-    val isDarkTheme = uiState.isDarkTheme
+    val isDarkTheme = uiState.isDarkTheme // added another variable to keep track of the switch
 
     Scaffold(
         topBar = {
@@ -86,12 +82,11 @@ private fun EmojiScreen(
                             tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
-
+                    // added switch, to toggle between light and dark theme
                     Switch(
                         checked = isDarkTheme,
-                        onCheckedChange = {backgroundToggle(!isDarkTheme)},
-
-                    )
+                        onCheckedChange = { backgroundToggle(!isDarkTheme) },// toggles between light and dark theme
+                        )
 
                 },
                 colors = TopAppBarDefaults.largeTopAppBarColors(
@@ -125,7 +120,7 @@ fun EmojiReleaseLinearLayout(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
-    val cntxt = LocalContext.current
+    val context = LocalContext.current
     LazyColumn(
         modifier = modifier,
         contentPadding = contentPadding,
@@ -139,18 +134,17 @@ fun EmojiReleaseLinearLayout(
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.primary
                 ),
-                shape = MaterialTheme.shapes.medium
-                , onClick = {
-                    Toast.makeText(cntxt, e, Toast.LENGTH_SHORT).show()
+                shape = MaterialTheme.shapes.medium, onClick = {
+                    Toast.makeText(context, e, Toast.LENGTH_SHORT).show()
                 }
             ) {
-                    Text(
-                        text = e, fontSize = 50.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(dimensionResource(R.dimen.padding_medium)),
-                        textAlign = TextAlign.Center
-                    )
+                Text(
+                    text = e, fontSize = 50.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(dimensionResource(R.dimen.padding_medium)),
+                    textAlign = TextAlign.Center
+                )
 
 
             }
@@ -163,7 +157,7 @@ fun EmojiReleaseGridLayout(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
-    val cntxt = LocalContext.current
+    val context = LocalContext.current
     LazyVerticalGrid(
         modifier = modifier,
         columns = GridCells.Fixed(3),
@@ -182,7 +176,7 @@ fun EmojiReleaseGridLayout(
                 modifier = Modifier.height(110.dp),
                 shape = MaterialTheme.shapes.medium,
                 onClick = {
-                    Toast.makeText(cntxt, e, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, e, Toast.LENGTH_SHORT).show()
                 }
             ) {
                 Text(

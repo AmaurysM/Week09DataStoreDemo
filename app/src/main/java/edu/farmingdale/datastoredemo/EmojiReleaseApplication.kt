@@ -13,7 +13,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
     name = LAYOUT_PREFERENCE_NAME
 )
 
-class EmojiReleaseApplication: Application() {
+class EmojiReleaseApplication : Application() {
     lateinit var userPreferencesRepository: UserPreferencesRepository
 
     override fun onCreate() {

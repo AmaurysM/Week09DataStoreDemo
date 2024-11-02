@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import edu.farmingdale.datastoredemo.R
 import edu.farmingdale.datastoredemo.EmojiReleaseApplication
+import edu.farmingdale.datastoredemo.R
 import edu.farmingdale.datastoredemo.data.local.UserPreferencesRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,10 +21,10 @@ class EmojiScreenViewModel(
 ) : ViewModel() {
     // UI states access for various
     val uiState: StateFlow<EmojiReleaseUiState> =
-        combine(
+        combine( // creates a combined flow from multiple flows
             userPreferencesRepository.isLinearLayout,
             userPreferencesRepository.isDarkTheme
-        ) { isLinearLayout, isDarkTheme ->
+        ) { isLinearLayout, isDarkTheme -> // this runs when either preference changes
             EmojiReleaseUiState(isLinearLayout, isDarkTheme)
         }.stateIn(
             scope = viewModelScope,
@@ -32,16 +32,6 @@ class EmojiScreenViewModel(
             initialValue = EmojiReleaseUiState()
         )
 
-        /*userPreferencesRepository.isLinearLayout.map { isLinearLayout ->
-            EmojiReleaseUiState(isLinearLayout)
-        }.stateIn(
-            scope = viewModelScope,
-            // Flow is set to emits value for when app is on the foreground
-            // 5 seconds stop delay is added to ensure it flows continuously
-            // for cases such as configuration change
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = EmojiReleaseUiState()
-        )*/
 
     /*
      * [selectLayout] change the layout and icons accordingly and
@@ -75,7 +65,7 @@ class EmojiScreenViewModel(
  */
 data class EmojiReleaseUiState(
     val isLinearLayout: Boolean = true,
-    val isDarkTheme: Boolean = true,
+    val isDarkTheme: Boolean = true, // saves the theme state
     val toggleContentDescription: Int =
         if (isLinearLayout) R.string.grid_layout_toggle else R.string.linear_layout_toggle,
     val toggleIcon: Int =
