@@ -18,7 +18,42 @@ import java.io.IOException
 class UserPreferencesRepository(
     private val dataStore: DataStore<Preferences>
 ) {
+
     private companion object {
+        val is_linear_layout = booleanPreferencesKey("is_linear_layout")
+        val is_dark_theme = booleanPreferencesKey("is_dark_theme")
+        const val TAG = "UserPreferencesRepo"
+    }
+
+    private fun <T> getPreference(key: Preferences.Key<T>, defaultValue: T): Flow<T> =
+        dataStore.data
+            .catch { exception ->
+                if (exception is IOException) {
+                    Log.e(TAG, "Error reading preferences.", exception)
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+            }
+            .map { preferences ->
+                preferences[key] ?: defaultValue
+            }
+
+    val isLinearLayout: Flow<Boolean> = getPreference(is_linear_layout, true)
+    val isDarkTheme: Flow<Boolean> = getPreference(is_dark_theme, true)
+
+    suspend fun saveLayoutPreference(isLinearLayout: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[is_linear_layout] = isLinearLayout
+        }
+    }
+
+    suspend fun saveThemePreference(isDarkTheme: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[is_dark_theme] = isDarkTheme
+        }
+    }
+/*    private companion object {
         val IS_LINEAR_LAYOUT = booleanPreferencesKey("is_linear_layout")
         val IS_DARK_THEME = booleanPreferencesKey("is_dark_theme")
         const val TAG = "UserPreferencesRepo"
@@ -37,6 +72,18 @@ class UserPreferencesRepository(
             preferences[IS_LINEAR_LAYOUT] ?: true
         }
 
+    val isDarkTheme: Flow<Boolean> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.e(TAG, "Error reading preferences.", it)
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }
+        .map { preferences ->
+            preferences[IS_DARK_THEME] ?: true
+        }
 
     suspend fun saveLayoutPreference(isLinearLayout: Boolean) {
         dataStore.edit { preferences ->
@@ -48,5 +95,5 @@ class UserPreferencesRepository(
         dataStore.edit { preferences ->
             preferences[IS_DARK_THEME] = isDarkTheme
         }
-    }
+    }*/
 }

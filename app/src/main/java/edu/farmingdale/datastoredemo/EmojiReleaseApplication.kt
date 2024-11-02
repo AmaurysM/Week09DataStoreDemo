@@ -19,5 +19,6 @@ class EmojiReleaseApplication: Application() {
     override fun onCreate() {
         super.onCreate()
         userPreferencesRepository = UserPreferencesRepository(dataStore)
+
     }
 }

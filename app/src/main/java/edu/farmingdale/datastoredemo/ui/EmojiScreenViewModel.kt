@@ -11,7 +11,7 @@ import edu.farmingdale.datastoredemo.EmojiReleaseApplication
 import edu.farmingdale.datastoredemo.data.local.UserPreferencesRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -21,7 +21,18 @@ class EmojiScreenViewModel(
 ) : ViewModel() {
     // UI states access for various
     val uiState: StateFlow<EmojiReleaseUiState> =
-        userPreferencesRepository.isLinearLayout.map { isLinearLayout ->
+        combine(
+            userPreferencesRepository.isLinearLayout,
+            userPreferencesRepository.isDarkTheme
+        ) { isLinearLayout, isDarkTheme ->
+            EmojiReleaseUiState(isLinearLayout, isDarkTheme)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = EmojiReleaseUiState()
+        )
+
+        /*userPreferencesRepository.isLinearLayout.map { isLinearLayout ->
             EmojiReleaseUiState(isLinearLayout)
         }.stateIn(
             scope = viewModelScope,
@@ -30,7 +41,7 @@ class EmojiScreenViewModel(
             // for cases such as configuration change
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = EmojiReleaseUiState()
-        )
+        )*/
 
     /*
      * [selectLayout] change the layout and icons accordingly and
@@ -39,6 +50,12 @@ class EmojiScreenViewModel(
     fun selectLayout(isLinearLayout: Boolean) {
         viewModelScope.launch {
             userPreferencesRepository.saveLayoutPreference(isLinearLayout)
+        }
+    }
+
+    fun selectThemeMode(isDarkTheme: Boolean) {
+        viewModelScope.launch {
+            userPreferencesRepository.saveThemePreference(isDarkTheme)
         }
     }
 
@@ -58,8 +75,9 @@ class EmojiScreenViewModel(
  */
 data class EmojiReleaseUiState(
     val isLinearLayout: Boolean = true,
+    val isDarkTheme: Boolean = true,
     val toggleContentDescription: Int =
         if (isLinearLayout) R.string.grid_layout_toggle else R.string.linear_layout_toggle,
     val toggleIcon: Int =
-        if (isLinearLayout) R.drawable.ic_grid_layout else R.drawable.ic_linear_layout
+        if (isLinearLayout) R.drawable.ic_grid_layout else R.drawable.ic_linear_layout/**/
 )

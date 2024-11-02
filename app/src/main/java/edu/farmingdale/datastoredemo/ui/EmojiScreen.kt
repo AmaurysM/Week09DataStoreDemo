@@ -56,6 +56,7 @@ fun EmojiReleaseApp(
     EmojiScreen(
         uiState = emojiViewModel.uiState.collectAsState().value,
         selectLayout = emojiViewModel::selectLayout,
+        backgroundToggle = emojiViewModel::selectThemeMode
     )
 }
 
@@ -63,9 +64,12 @@ fun EmojiReleaseApp(
 @Composable
 private fun EmojiScreen(
     uiState: EmojiReleaseUiState,
-    selectLayout: (Boolean) -> Unit
+    selectLayout: (Boolean) -> Unit,
+    backgroundToggle: (Boolean) -> Unit
 ) {
     val isLinearLayout = uiState.isLinearLayout
+    val isDarkTheme = uiState.isDarkTheme
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -83,6 +87,11 @@ private fun EmojiScreen(
                         )
                     }
 
+                    Switch(
+                        checked = isDarkTheme,
+                        onCheckedChange = {backgroundToggle(!isDarkTheme)},
+
+                    )
 
                 },
                 colors = TopAppBarDefaults.largeTopAppBarColors(
